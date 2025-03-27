@@ -3,7 +3,7 @@
     This problem requires you to implement a basic graph functio
 */
 
-#![feature(map_try_insert)]
+// #![feature(map_try_insert)]
 use std::collections::{HashMap, HashSet};
 use std::fmt;
 #[derive(Debug, Clone)]
@@ -45,12 +45,9 @@ pub trait Graph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
         //TODO
-        // #![feature(map_try_insert)]
         let adj_tab = self.adjacency_table_mutable();
-        match adj_tab.try_insert(String::from(node), vec![]) {
-            Ok(_) => true,
-            Err(_) => false,
-        }
+        adj_tab.entry(String::from(node)).or_insert(vec![]) ;
+        true
     }
 
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
@@ -58,7 +55,7 @@ pub trait Graph {
         let adj_tab = self.adjacency_table_mutable();
         let key1 = String::from(edge.0);
         let key2 = String::from(edge.1);
-        let _ = adj_tab.try_insert(key2.clone(), vec![]);
+        let _ = adj_tab.entry(key2.clone()).or_insert(vec![]);
         let edges = adj_tab.entry(key1).or_insert(vec![]);
         edges.push((key2, edge.2));
     }
