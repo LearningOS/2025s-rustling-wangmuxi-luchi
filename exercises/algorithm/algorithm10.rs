@@ -34,9 +34,9 @@ impl Graph for UndirectedGraph {
         let key1 = String::from(edge.0);
         let key2 = String::from(edge.1);
         let edges = adj_tab.entry(key1.clone()).or_insert(vec![]);
-        edges.push((key2.clone(),edge.2));
+        edges.push((key2.clone(), edge.2));
         let edges = adj_tab.entry(key2).or_insert(vec![]);
-        edges.push((key1,edge.2));
+        edges.push((key1, edge.2));
     }
 }
 pub trait Graph {
@@ -52,15 +52,15 @@ pub trait Graph {
             Err(_) => false,
         }
     }
-    
+
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
         let adj_tab = self.adjacency_table_mutable();
         let key1 = String::from(edge.0);
         let key2 = String::from(edge.1);
-        adj_tab.try_insert(key2.clone(), vec![]); 
+        let _ = adj_tab.try_insert(key2.clone(), vec![]);
         let edges = adj_tab.entry(key1).or_insert(vec![]);
-        edges.push((key2,edge.2));
+        edges.push((key2, edge.2));
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
