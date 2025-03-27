@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +37,18 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        // put the value in the end of items
+        self.count += 1;
+        self.items.push(value);
+        let mut idx = self.len();
+        let mut par_idx = self.parent_idx(idx);
+        // switch the value into right position
+        while idx != 1 && (self.comparator)(&self.items[idx], &self.items[par_idx]) {
+            // (self.items[idx], self.items[par_idx]) = (self.items[par_idx], self.items[idx]);
+            self.items.swap(idx, par_idx);
+            idx = par_idx;
+            par_idx = self.parent_idx(idx);
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +69,37 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        self.count / 2 + 1
+    }
+    fn pop(&mut self) -> Option<T> {
+        if self.count <= 1 {
+            return None;
+        }
+        self.items.swap(1, self.count);
+        let ret = self.items.pop();
+        self.count -= 1;
+        let mut idx = 1_usize;
+        self.pop_util(idx);
+        ret
+    }
+    fn pop_util(&mut self, idx: usize) {
+        if self.children_present(idx) {
+            let li = self.left_child_idx(idx);
+            let ri = self.right_child_idx(idx);
+            let child_idx = if ri <= self.count {
+                if (self.comparator)(&self.items[ri], &self.items[li]) {
+                    ri
+                } else {
+                    li
+                }
+            } else {
+                li
+            };
+            if (self.comparator)(&self.items[child_idx], &self.items[idx]) {
+                self.items.swap(idx, child_idx);
+                self.pop_util(child_idx);
+            }
+        }
     }
 }
 
@@ -84,8 +125,7 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        self.pop()
     }
 }
 
